@@ -3,7 +3,16 @@ Command line utility to compile a JS project from ES modules to CommonJS.
 
 This is handy when building hybrid ESM/CommonJS npm packages.
 
+## Install (globally)
+```bash
+# using npm
+npm i -g @alcalzone/esm2cjs
+# using yarn
+yarn add --global @alcalzone/esm2cjs
+```
+
 ## Usage
+
 ```bash
 esm2cjs --in path/to/input --out path/to/output [options]
 ```

@@ -1,5 +1,8 @@
 {
-  "name": "esm2cjs",
+  "name": "@alcalzone/esm2cjs",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Command line utility to compile a JS project from ES modules to CommonJS",
   "version": "1.0.0",
   "bin": "bin/esm2cjs.js",
