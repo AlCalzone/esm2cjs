@@ -13,3 +13,7 @@ Detailed help is shown on the command line using
 ```bash
 esm2cjs --help
 ```
+
+## Changelog
+### **WORK IN PROGRESS**
+Initial release
