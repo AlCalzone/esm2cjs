@@ -1,0 +1,49 @@
+{
+  "name": "esm2cjs",
+  "description": "Command line utility to compile a JS project from ES modules to CommonJS",
+  "version": "1.0.0",
+  "bin": "bin/esm2cjs.js",
+  "main": "build/cjs/index.js",
+  "module": "build/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./build/esm/index.js",
+      "require": "./build/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "build/esm/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "build/esm/index.d.ts": [
+        "build/esm/index.d.ts"
+      ],
+      "build/cjs/index.d.ts": [
+        "build/esm/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "build/**/*.{js,d.ts,map}"
+  ],
+  "repository": "https://github.com/AlCalzone/esm2cjs",
+  "author": "Dominic Griesel <d.griesel@gmx.net>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "postbuild": "node -r esbuild-register .postbuild.ts"
+  },
+  "dependencies": {
+    "esbuild": "^0.12.9",
+    "fs-extra": "^10.0.0",
+    "tiny-glob": "^0.2.9",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
+    "@types/fs-extra": "^9.0.11",
+    "@types/yargs": "^16.0.3",
+    "esbuild-register": "^2.6.0",
+    "typescript": "^4.3.2"
+  }
+}
