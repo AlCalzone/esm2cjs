@@ -25,6 +25,14 @@ Detailed help is shown on the command line using
 esm2cjs --help
 ```
 
+## Performance
+
+### Test case 1: [`zwave-js`](https://github.com/zwave-js/node-zwave-js)
+
+| No. of input files | total size | time taken |
+| ------------------ | ---------- | ---------- |
+| 141                | 987 KB     | 390 ms     |
+
 ## Changelog
 
 ### 1.0.0 (2021-06-16)
