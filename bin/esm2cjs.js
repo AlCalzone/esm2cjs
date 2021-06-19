@@ -24,6 +24,19 @@ const argv = yargs(hideBin(process.argv))
 		default: "**/*.js",
 		description: "Override the default input file glob(s)",
 	})
+	.option("platform", {
+		alias: "p",
+		type: "string",
+		default: "node",
+		choices: ["node", "browser", "neutral"],
+		description: "Change the platform the code is meant to be run on. Details see https://esbuild.github.io/api/#platform"
+	})
+	.option("target", {
+		alias: "t",
+		type: "string",
+		default: "node10",
+		description: "Override the default compile target. Details see https://esbuild.github.io/api/#target"
+	})
 	.option("loglevel", {
 		alias: "l",
 		type: "string",
@@ -38,7 +51,7 @@ const argv = yargs(hideBin(process.argv))
 			"The output directory where CommonJS files should be placed",
 	})
 	.option("writePackageJson", {
-		alias: "p",
+		alias: "j",
 		type: "boolean",
 		default: true,
 		description:
@@ -64,6 +77,8 @@ const argv = yargs(hideBin(process.argv))
 		outDir,
 		cleanOutDir: argv.cleanOutDir,
 		globs: argv.glob,
+		target: argv.target,
+		platform:  /** @type {any} */ (argv.platform),
 		writePackageJson: argv.writePackageJson,
 		logLevel: /** @type {any} */ (argv.loglevel),
 	});
