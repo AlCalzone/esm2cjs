@@ -34,6 +34,12 @@ esm2cjs --help
 | 141                | 987 KB     | 390 ms     |
 
 ## Changelog
+<!--
+  Placeholder for the next version:
+  ### **WORK IN PROGRESS**
+-->
+### 1.1.0 (2021-06-19)
+* Support specifying output target and platform
 
 ### 1.0.0 (2021-06-16)
 

@@ -4,7 +4,7 @@
     "access": "public"
   },
   "description": "Command line utility to compile a JS project from ES modules to CommonJS",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "bin": "bin/esm2cjs.js",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",
