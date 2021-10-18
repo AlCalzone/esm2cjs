@@ -66,7 +66,7 @@ const argv = yargs(hideBin(process.argv))
 	.example(
 		"$0 --in test/esm --out test/cjs",
 		"Compiles .js files in test/esm to CommonJS and places them in test/cjs",
-	).argv;
+	).parseSync();
 
 (async () => {
 	const inDir = path.join(process.cwd(), argv.in);
