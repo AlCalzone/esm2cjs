@@ -160,7 +160,7 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   ### **WORK IN PROGRESS**
 -->
 
-### **WORK IN PROGRESS**
+### 1.1.1 (2021-10-18)
 Dependency updates
 
 ### 1.1.0 (2021-06-19)
