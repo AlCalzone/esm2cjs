@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../esm/test1.js"],
   "sourcesContent": ["export const test = \"test1\";\n"],
-  "mappings": ";;;;;;;AAAA;AAAA;AAAA;AAAO,MAAM,OAAO;",
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,OAAO;",
   "names": []
 }
