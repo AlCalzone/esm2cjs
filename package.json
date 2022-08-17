@@ -48,7 +48,8 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^1.10.0",
+    "@alcalzone/release-script": "~3.5.9",
+    "@alcalzone/release-script-plugin-license": "~3.5.9",
     "@babel/core": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.18.6",

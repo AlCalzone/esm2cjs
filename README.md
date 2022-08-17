@@ -159,6 +159,8 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+Dependency updates
 
 ### 1.1.1 (2021-10-18)
 Dependency updates
