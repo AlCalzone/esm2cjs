@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../../src/index.ts"],
   "sourcesContent": [null],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;AAAA;;;qBAAwC;",
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;;;;;qBAAwC;",
   "names": []
 }
