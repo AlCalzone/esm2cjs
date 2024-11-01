@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/esm/index.ts"],
-  "sourcesContent": ["export { esm2cjs, ESM2CJSOptions } from \"./esm2cjs\";\n"],
+  "sourcesContent": ["export { esm2cjs, ESM2CJSOptions } from \"./esm2cjs.js\";\n"],
   "mappings": ";;;;;;;;;;;;;;;;;;AAAA;;;;;AAAA,qBAAwC;",
   "names": []
 }

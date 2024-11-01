@@ -1,1 +1,1 @@
-export { esm2cjs, ESM2CJSOptions } from "./esm2cjs";
+export { esm2cjs, ESM2CJSOptions } from "./esm2cjs.js";

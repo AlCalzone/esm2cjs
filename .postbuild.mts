@@ -1,5 +1,5 @@
 // Dogfooding, yay!
-import { esm2cjs } from "./src/esm";
+import { esm2cjs } from "./src/esm/esm2cjs.js";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";

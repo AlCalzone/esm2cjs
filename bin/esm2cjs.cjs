@@ -3,7 +3,7 @@
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const path = require("path");
-const { esm2cjs } = require("..");
+const { esm2cjs } = require("../build/cjs");
 
 const argv = yargs(hideBin(process.argv))
 	.option("in", {
@@ -34,7 +34,7 @@ const argv = yargs(hideBin(process.argv))
 	.option("target", {
 		alias: "t",
 		type: "string",
-		default: "node10",
+		default: "node18",
 		description: "Override the default compile target. Details see https://esbuild.github.io/api/#target"
 	})
 	.option("loglevel", {

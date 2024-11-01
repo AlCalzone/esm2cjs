@@ -21,7 +21,7 @@ __export(esm_exports, {
   esm2cjs: () => import_esm2cjs.esm2cjs
 });
 module.exports = __toCommonJS(esm_exports);
-var import_esm2cjs = require("./esm2cjs");
+var import_esm2cjs = require("./esm2cjs.js");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   esm2cjs

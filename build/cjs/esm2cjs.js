@@ -33,10 +33,10 @@ __export(esm2cjs_exports, {
 });
 module.exports = __toCommonJS(esm2cjs_exports);
 var __import_meta_url = typeof document === "undefined" ? new (require("url".replace("", ""))).URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href;
-var import_node_path = __toESM(require("node:path"));
+var import_node_path = __toESM(require("node:path"), 1);
 var import_esbuild = require("esbuild");
-var import_fs_extra = __toESM(require("fs-extra"));
-var import_tiny_glob = __toESM(require("tiny-glob"));
+var import_fs_extra = __toESM(require("fs-extra"), 1);
+var import_tiny_glob = __toESM(require("tiny-glob"), 1);
 var import_node_url = require("node:url");
 const _dirname = import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__import_meta_url));
 const shimsDir = import_node_path.default.join(_dirname, "../../shims");
