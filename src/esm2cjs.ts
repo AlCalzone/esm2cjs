@@ -22,7 +22,7 @@ export async function esm2cjs({
 	sourcemap = true,
 	logLevel = "warning",
 	platform = "node",
-	target = "node10",
+	target = "node18",
 	cleanOutDir = false,
 	writePackageJson = true,
 }: ESM2CJSOptions) {
@@ -47,6 +47,10 @@ export async function esm2cjs({
 		platform,
 		format: "cjs",
 		target,
+		define: {
+			"import.meta.url": "__import_meta_url",
+		},
+		inject: [path.join(__dirname, "shims/import.meta.url/shim.js")],
 	});
 
 	// If desired, define the module type of each build directory separately

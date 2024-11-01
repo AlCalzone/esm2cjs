@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../esm/test2.js", "../../../src/shims/import.meta.url/shim.js"],
+  "sourcesContent": ["import path from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\nexport const _dirname = path.dirname(fileURLToPath(import.meta.url));\n", "export const __import_meta_url =\n  typeof document === 'undefined' ? new (require('url'.replace('', '')).URL)('file:' + __filename).href :\n    (document.currentScript && document.currentScript.src || new URL('main.js', document.baseURI).href)\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;ACAO,IAAM,oBACX,OAAO,aAAa,cAAc,KAAK,QAAQ,MAAM,QAAQ,IAAI,EAAE,CAAC,GAAE,IAAK,UAAU,UAAU,EAAE,OAC9F,SAAS,iBAAiB,SAAS,cAAc,OAAO,IAAI,IAAI,WAAW,SAAS,OAAO,EAAE;ADFlG,uBAAiB;AACjB,sBAA8B;AACvB,MAAM,WAAW,iBAAAA,QAAK,YAAQ,+BAAc,iBAAe,CAAC;",
+  "names": ["path"]
+}

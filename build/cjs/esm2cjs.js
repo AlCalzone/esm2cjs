@@ -18,6 +18,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -31,7 +35,7 @@ var import_path = __toESM(require("path"), 1);
 var import_esbuild = require("esbuild");
 var import_fs_extra = __toESM(require("fs-extra"), 1);
 var import_tiny_glob = __toESM(require("tiny-glob"), 1);
-async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node10", cleanOutDir = false, writePackageJson = true }) {
+async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true }) {
   if (cleanOutDir)
     await import_fs_extra.default.emptyDir(outDir);
   if (typeof globs === "string")
@@ -47,7 +51,11 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     logLevel,
     platform,
     format: "cjs",
-    target
+    target,
+    define: {
+      "import.meta.url": "__import_meta_url"
+    },
+    inject: [import_path.default.join(__dirname, "shims/import.meta.url/shim.js")]
   });
   if (writePackageJson) {
     await import_fs_extra.default.writeJSON(import_path.default.join(inDir, "package.json"), { type: "module" }, {

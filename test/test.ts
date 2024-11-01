@@ -22,4 +22,17 @@ describe("Compilation tests", () => {
 
 		expect(require("./fixtures/cjs/test1.js").test).toBe("test1");
 	});
+
+	it("Test 2: import.meta.url", async () => {
+		const content = await fs.readFile(
+			path.join(__dirname, "fixtures/cjs/test2.js"),
+			"utf8",
+		);
+
+		expect(content).toMatchSnapshot();
+
+		expect(require("./fixtures/cjs/test2.js")._dirname).toBe(
+			path.join(__dirname, "fixtures/cjs"),
+		);
+	});
 });
