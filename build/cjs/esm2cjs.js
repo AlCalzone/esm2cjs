@@ -55,7 +55,7 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     define: {
       "import.meta.url": "__import_meta_url"
     },
-    inject: [import_path.default.join(__dirname, "shims/import.meta.url/shim.js")]
+    inject: [import_path.default.join(__dirname, "../shims/import.meta.url/shim.js")]
   });
   if (writePackageJson) {
     await import_fs_extra.default.writeJSON(import_path.default.join(inDir, "package.json"), { type: "module" }, {

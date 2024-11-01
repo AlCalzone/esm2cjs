@@ -25,7 +25,7 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
         define: {
             "import.meta.url": "__import_meta_url",
         },
-        inject: [path.join(__dirname, "shims/import.meta.url/shim.js")],
+        inject: [path.join(__dirname, "../shims/import.meta.url/shim.js")],
     });
     // If desired, define the module type of each build directory separately
     if (writePackageJson) {

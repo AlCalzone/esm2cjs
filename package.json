@@ -28,7 +28,8 @@
   },
   "files": [
     "bin/",
-    "build/**/*.{js,d.ts,map}"
+    "build/**/*.{js,d.ts,map}",
+    "shims/"
   ],
   "repository": "https://github.com/AlCalzone/esm2cjs",
   "author": "Dominic Griesel <d.griesel@gmx.net>",
