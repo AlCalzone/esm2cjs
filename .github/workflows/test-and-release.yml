@@ -23,15 +23,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x, 18.x]
+        node-version: [18, 20, 22]
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
 
     - name: Install dependencies
       run: yarn install --frozen-lockfile
@@ -59,16 +60,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [22]
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
 
     - name: Extract the version and commit body from the tag
       id: extract_release
@@ -76,12 +78,12 @@ jobs:
       run: |
         VERSION="${{ github.ref }}"
         VERSION=${VERSION##*/v}
-        echo "::set-output name=VERSION::$VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        EOF=$(od -An -N6 -x /dev/urandom | tr -d ' ')
         BODY=$(git show -s --format=%b)
-        BODY="${BODY//'%'/'%25'}"
-        BODY="${BODY//$'\n'/'%0A'}"
-        BODY="${BODY//$'\r'/'%0D'}"
-        echo "::set-output name=BODY::$BODY"
+        echo "BODY<<$EOF" >> $GITHUB_OUTPUT
+        echo "$BODY" >> $GITHUB_OUTPUT
+        echo "$EOF" >> $GITHUB_OUTPUT
 
     - name: Install dependencies
       run: yarn install --frozen-lockfile
@@ -96,12 +98,12 @@ jobs:
         npm publish
 
     - name: Create Github Release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release v${{ steps.extract_release.outputs.VERSION }}
+        name: Release v${{ steps.extract_release.outputs.VERSION }}
         draft: false
         # Prerelease versions create prereleases on Github
         prerelease: ${{ contains(steps.extract_release.outputs.VERSION, '-') }}
