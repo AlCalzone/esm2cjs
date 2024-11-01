@@ -28,13 +28,18 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var esm2cjs_exports = {};
 __export(esm2cjs_exports, {
-  esm2cjs: () => esm2cjs
+  esm2cjs: () => esm2cjs,
+  shimsDir: () => shimsDir
 });
 module.exports = __toCommonJS(esm2cjs_exports);
-var import_path = __toESM(require("path"), 1);
+var __import_meta_url = typeof document === "undefined" ? new (require("url".replace("", ""))).URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href;
+var import_node_path = __toESM(require("node:path"));
 var import_esbuild = require("esbuild");
-var import_fs_extra = __toESM(require("fs-extra"), 1);
-var import_tiny_glob = __toESM(require("tiny-glob"), 1);
+var import_fs_extra = __toESM(require("fs-extra"));
+var import_tiny_glob = __toESM(require("tiny-glob"));
+var import_node_url = require("node:url");
+const _dirname = import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__import_meta_url));
+const shimsDir = import_node_path.default.join(_dirname, "../../shims");
 async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true }) {
   if (cleanOutDir)
     await import_fs_extra.default.emptyDir(outDir);
@@ -55,19 +60,20 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     define: {
       "import.meta.url": "__import_meta_url"
     },
-    inject: [import_path.default.join(__dirname, "../shims/import.meta.url/shim.js")]
+    inject: [import_node_path.default.join(shimsDir, "import.meta.url/shim.js")]
   });
   if (writePackageJson) {
-    await import_fs_extra.default.writeJSON(import_path.default.join(inDir, "package.json"), { type: "module" }, {
+    await import_fs_extra.default.writeJSON(import_node_path.default.join(inDir, "package.json"), { type: "module" }, {
       spaces: 4
     });
-    await import_fs_extra.default.writeJSON(import_path.default.join(outDir, "package.json"), { type: "commonjs" }, {
+    await import_fs_extra.default.writeJSON(import_node_path.default.join(outDir, "package.json"), { type: "commonjs" }, {
       spaces: 4
     });
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  esm2cjs
+  esm2cjs,
+  shimsDir
 });
 //# sourceMappingURL=esm2cjs.js.map

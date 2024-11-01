@@ -1,7 +1,10 @@
-import path from "path";
+import path from "node:path";
 import { build } from "esbuild";
 import fs from "fs-extra";
 import glob from "tiny-glob";
+import { fileURLToPath } from "node:url";
+const _dirname = path.dirname(fileURLToPath(import.meta.url));
+export const shimsDir = path.join(_dirname, "../../shims");
 export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, }) {
     // Clean the output dir if necessary
     if (cleanOutDir)
@@ -25,7 +28,7 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
         define: {
             "import.meta.url": "__import_meta_url",
         },
-        inject: [path.join(__dirname, "../shims/import.meta.url/shim.js")],
+        inject: [path.join(shimsDir, "import.meta.url/shim.js")],
     });
     // If desired, define the module type of each build directory separately
     if (writePackageJson) {

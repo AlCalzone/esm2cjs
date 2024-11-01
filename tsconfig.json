@@ -67,7 +67,7 @@
 	"include": [
 		"test/**/*.ts",
 		"src/**/*.ts",
-		".postbuild.ts",
+		".postbuild.mts",
 		"bin/*.js"
 	]
 }

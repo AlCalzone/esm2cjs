@@ -1,7 +1,11 @@
-import path from "path";
+import path from "node:path";
 import { BuildOptions, build } from "esbuild";
 import fs from "fs-extra";
 import glob from "tiny-glob";
+import { fileURLToPath } from "node:url";
+
+const _dirname = path.dirname(fileURLToPath(import.meta.url));
+export const shimsDir = path.join(_dirname, "../../shims");
 
 export interface ESM2CJSOptions {
 	inDir: string;
@@ -50,7 +54,7 @@ export async function esm2cjs({
 		define: {
 			"import.meta.url": "__import_meta_url",
 		},
-		inject: [path.join(__dirname, "../shims/import.meta.url/shim.js")],
+		inject: [path.join(shimsDir, "import.meta.url/shim.js")],
 	});
 
 	// If desired, define the module type of each build directory separately

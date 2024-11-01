@@ -1,4 +1,5 @@
 import { BuildOptions } from "esbuild";
+export declare const shimsDir: string;
 export interface ESM2CJSOptions {
     inDir: string;
     outDir: string;

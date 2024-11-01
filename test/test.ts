@@ -1,4 +1,4 @@
-import { esm2cjs } from "../src/esm2cjs";
+import { esm2cjs } from "../build/cjs/esm2cjs.js";
 import fs from "fs-extra";
 import path from "path";
 

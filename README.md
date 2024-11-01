@@ -159,6 +159,9 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Fix: wrong path for shims
+
 ### 1.2.1 (2024-11-01)
 * Fix: shims not included in npm package
 
