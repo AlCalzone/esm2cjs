@@ -150,7 +150,7 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.2.3 (2024-11-04)
 * Update default target to node18
 * Shim `import.meta.url` by default
 * Update documentation for package.json setup
