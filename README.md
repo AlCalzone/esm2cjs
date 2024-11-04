@@ -150,15 +150,10 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
-### 1.2.2 (2024-11-01)
-* Fix: wrong path for shims
-
-### 1.2.1 (2024-11-01)
-* Fix: shims not included in npm package
-
-### 1.2.0 (2024-11-01)
+### **WORK IN PROGRESS**
 * Update default target to node18
 * Shim `import.meta.url` by default
+* Update documentation for package.json setup
 
 ### 1.1.2 (2022-08-17)
 Dependency updates
