@@ -1,12 +1,11 @@
 {
 	"extends": "@tsconfig/node18/tsconfig.json",
-	"compilerOptions": {
-		
-	},
+	"compilerOptions": {},
 	"include": [
-		"test/**/*.ts",
+		"test/**/*.{ts,cts,mts}",
 		"src/**/*.ts",
 		".postbuild.mts",
-		"bin/*.js"
-, "bin/esm2cjs.cjs"	]
+		"bin/*.js",
+		"bin/esm2cjs.cjs",
+	]
 }

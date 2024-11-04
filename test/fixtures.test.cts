@@ -1,6 +1,7 @@
 import { esm2cjs } from "../build/cjs/esm2cjs.js";
 import fs from "fs-extra";
 import path from "path";
+import {describe, beforeAll, it, expect} from "vitest"
 
 describe("Compilation tests", () => {
 	beforeAll(async () => {
@@ -8,7 +9,7 @@ describe("Compilation tests", () => {
 			inDir: path.join(__dirname, "fixtures/esm"),
 			outDir: path.join(__dirname, "fixtures/cjs"),
 			cleanOutDir: true,
-			writePackageJson: false,
+			writePackageJson: true,
 		});
 	});
 

@@ -46,12 +46,13 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
   if (typeof globs === "string")
     globs = [globs];
   const entryPoints = (await Promise.all(globs.map((g) => (0, import_tiny_glob.default)(g, { cwd: inDir })))).reduce((prev, cur) => [...prev, ...cur], []);
-  await (0, import_esbuild.build)({
+  const buildResult = await (0, import_esbuild.build)({
     absWorkingDir: inDir,
     entryPoints,
     outdir: outDir,
     bundle: false,
     minify: false,
+    metafile: true,
     sourcemap,
     logLevel,
     platform,
@@ -62,6 +63,16 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     },
     inject: [import_node_path.default.join(shimsDir, "import.meta.url/shim.js")]
   });
+  if (buildResult.metafile) {
+    for (const inputFile of Object.keys(buildResult.metafile.inputs)) {
+      if (inputFile.startsWith(".")) {
+        continue;
+      }
+      const declarationFileName = inputFile.replace(/\.([cm]?)js$/, ".d.$1ts");
+      await import_fs_extra.default.copyFile(import_node_path.default.join(inDir, declarationFileName), import_node_path.default.join(outDir, declarationFileName)).catch(() => {
+      });
+    }
+  }
   if (writePackageJson) {
     await import_fs_extra.default.writeJSON(import_node_path.default.join(inDir, "package.json"), { type: "module" }, {
       spaces: 4

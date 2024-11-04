@@ -40,12 +40,13 @@ export async function esm2cjs({
 	).reduce((prev, cur) => [...prev, ...cur], []);
 
 	// Compile ESM to CJS using esbuild
-	await build({
+	const buildResult = await build({
 		absWorkingDir: inDir,
 		entryPoints,
 		outdir: outDir,
 		bundle: false,
 		minify: false,
+		metafile: true,
 		sourcemap,
 		logLevel,
 		platform,
@@ -56,6 +57,27 @@ export async function esm2cjs({
 		},
 		inject: [path.join(shimsDir, "import.meta.url/shim.js")],
 	});
+
+	// Copy .d.ts files
+	if (buildResult.metafile) {
+		for (const inputFile of Object.keys(buildResult.metafile.inputs)) {
+			if (inputFile.startsWith(".")) {
+				// File outside of the build directory, skip
+				continue;
+			}
+			const declarationFileName = inputFile.replace(
+				/\.([cm]?)js$/,
+				".d.$1ts",
+			);
+			// Try to copy the file, but don't fail if it doesn't exist
+			await fs
+				.copyFile(
+					path.join(inDir, declarationFileName),
+					path.join(outDir, declarationFileName),
+				)
+				.catch(() => {});
+		}
+	}
 
 	// If desired, define the module type of each build directory separately
 	if (writePackageJson) {
