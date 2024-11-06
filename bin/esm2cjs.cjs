@@ -29,13 +29,15 @@ const argv = yargs(hideBin(process.argv))
 		type: "string",
 		default: "node",
 		choices: ["node", "browser", "neutral"],
-		description: "Change the platform the code is meant to be run on. Details see https://esbuild.github.io/api/#platform"
+		description:
+			"Change the platform the code is meant to be run on. Details see https://esbuild.github.io/api/#platform",
 	})
 	.option("target", {
 		alias: "t",
 		type: "string",
 		default: "node18",
-		description: "Override the default compile target. Details see https://esbuild.github.io/api/#target"
+		description:
+			"Override the default compile target. Details see https://esbuild.github.io/api/#target",
 	})
 	.option("loglevel", {
 		alias: "l",
@@ -57,6 +59,14 @@ const argv = yargs(hideBin(process.argv))
 		description:
 			"Create two package.json files containing the module type in the input and output directory",
 	})
+	.option("packageJsonSideEffects", {
+		alias: "x",
+		type: "boolean",
+		default: true,
+		description:
+			"When writePackageJson is true, this can be used to specify whether the generated package.json files should contain sideEffects: false. Bundlers use this information to tree-shake the code. " +
+			"To specify individual files with side effects instead, use the programmatic API.",
+	})
 	.option("cleanOutDir", {
 		alias: "c",
 		type: "boolean",
@@ -66,7 +76,8 @@ const argv = yargs(hideBin(process.argv))
 	.example(
 		"$0 --in test/esm --out test/cjs",
 		"Compiles .js files in test/esm to CommonJS and places them in test/cjs",
-	).parseSync();
+	)
+	.parseSync();
 
 (async () => {
 	const inDir = path.join(process.cwd(), argv.in);
@@ -78,7 +89,7 @@ const argv = yargs(hideBin(process.argv))
 		cleanOutDir: argv.cleanOutDir,
 		globs: argv.glob,
 		target: argv.target,
-		platform:  /** @type {any} */ (argv.platform),
+		platform: /** @type {any} */ (argv.platform),
 		writePackageJson: argv.writePackageJson,
 		logLevel: /** @type {any} */ (argv.loglevel),
 	});
