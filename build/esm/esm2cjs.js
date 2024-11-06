@@ -5,7 +5,7 @@ import glob from "tiny-glob";
 import { fileURLToPath } from "node:url";
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
 export const shimsDir = path.join(_dirname, "../../shims");
-export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects, }) {
+export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", }) {
     // Clean the output dir if necessary
     if (cleanOutDir)
         await fs.emptyDir(outDir);
@@ -47,12 +47,25 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
     }
     // If desired, define the module type of each build directory separately
     if (writePackageJson) {
+        let inheritedSideEffects;
+        if (packageJsonSideEffects === "inherit") {
+            const parentPackageJson = await fs
+                .readJSON(path.join(process.cwd(), "package.json"))
+                .catch(() => undefined);
+            if (parentPackageJson?.sideEffects != undefined) {
+                inheritedSideEffects = {
+                    sideEffects: parentPackageJson.sideEffects,
+                };
+            }
+        }
         const sideEffects = 
         // Assume the package has side effects, unless explicitly stated otherwise
         packageJsonSideEffects === true ||
             packageJsonSideEffects === undefined
             ? {}
-            : { sideEffects: packageJsonSideEffects };
+            : packageJsonSideEffects === "inherit"
+                ? inheritedSideEffects ?? {}
+                : { sideEffects: packageJsonSideEffects };
         await fs.writeJSON(path.join(inDir, "package.json"), {
             type: "module",
             ...sideEffects,
