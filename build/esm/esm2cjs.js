@@ -5,7 +5,7 @@ import glob from "tiny-glob";
 import { fileURLToPath } from "node:url";
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
 export const shimsDir = path.join(_dirname, "../../shims");
-export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, }) {
+export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects, }) {
     // Clean the output dir if necessary
     if (cleanOutDir)
         await fs.emptyDir(outDir);
@@ -47,12 +47,20 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
     }
     // If desired, define the module type of each build directory separately
     if (writePackageJson) {
-        await fs.writeJSON(path.join(inDir, "package.json"), { type: "module" }, {
-            spaces: 4,
-        });
-        await fs.writeJSON(path.join(outDir, "package.json"), { type: "commonjs" }, {
-            spaces: 4,
-        });
+        const sideEffects = 
+        // Assume the package has side effects, unless explicitly stated otherwise
+        packageJsonSideEffects === true ||
+            packageJsonSideEffects === undefined
+            ? {}
+            : { sideEffects: packageJsonSideEffects };
+        await fs.writeJSON(path.join(inDir, "package.json"), {
+            type: "module",
+            ...sideEffects,
+        }, { spaces: 4 });
+        await fs.writeJSON(path.join(outDir, "package.json"), {
+            type: "commonjs",
+            ...sideEffects,
+        }, { spaces: 4 });
     }
 }
 //# sourceMappingURL=esm2cjs.js.map

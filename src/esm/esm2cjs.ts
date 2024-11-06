@@ -17,6 +17,7 @@ export interface ESM2CJSOptions {
 	platform?: BuildOptions["platform"];
 	target?: BuildOptions["target"];
 	writePackageJson?: boolean;
+	packageJsonSideEffects?: boolean | string[];
 }
 
 export async function esm2cjs({
@@ -29,6 +30,7 @@ export async function esm2cjs({
 	target = "node18",
 	cleanOutDir = false,
 	writePackageJson = true,
+	packageJsonSideEffects,
 }: ESM2CJSOptions) {
 	// Clean the output dir if necessary
 	if (cleanOutDir) await fs.emptyDir(outDir);
@@ -81,19 +83,27 @@ export async function esm2cjs({
 
 	// If desired, define the module type of each build directory separately
 	if (writePackageJson) {
+		const sideEffects =
+			// Assume the package has side effects, unless explicitly stated otherwise
+			packageJsonSideEffects === true ||
+			packageJsonSideEffects === undefined
+				? {}
+				: { sideEffects: packageJsonSideEffects };
 		await fs.writeJSON(
 			path.join(inDir, "package.json"),
-			{ type: "module" },
 			{
-				spaces: 4,
+				type: "module",
+				...sideEffects,
 			},
+			{ spaces: 4 },
 		);
 		await fs.writeJSON(
 			path.join(outDir, "package.json"),
-			{ type: "commonjs" },
 			{
-				spaces: 4,
+				type: "commonjs",
+				...sideEffects,
 			},
+			{ spaces: 4 },
 		);
 	}
 }
