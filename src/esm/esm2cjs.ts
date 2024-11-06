@@ -17,7 +17,7 @@ export interface ESM2CJSOptions {
 	platform?: BuildOptions["platform"];
 	target?: BuildOptions["target"];
 	writePackageJson?: boolean;
-	packageJsonSideEffects?: boolean | string[];
+	packageJsonSideEffects?: boolean | "inherit" | string[];
 }
 
 export async function esm2cjs({
@@ -30,7 +30,7 @@ export async function esm2cjs({
 	target = "node18",
 	cleanOutDir = false,
 	writePackageJson = true,
-	packageJsonSideEffects,
+	packageJsonSideEffects = "inherit",
 }: ESM2CJSOptions) {
 	// Clean the output dir if necessary
 	if (cleanOutDir) await fs.emptyDir(outDir);
@@ -83,11 +83,25 @@ export async function esm2cjs({
 
 	// If desired, define the module type of each build directory separately
 	if (writePackageJson) {
+		let inheritedSideEffects: Record<string, any> | undefined;
+		if (packageJsonSideEffects === "inherit") {
+			const parentPackageJson = await fs
+				.readJSON(path.join(process.cwd(), "package.json"))
+				.catch(() => undefined);
+			if (parentPackageJson?.sideEffects != undefined) {
+				inheritedSideEffects = {
+					sideEffects: parentPackageJson.sideEffects,
+				};
+			}
+		}
+
 		const sideEffects =
 			// Assume the package has side effects, unless explicitly stated otherwise
 			packageJsonSideEffects === true ||
 			packageJsonSideEffects === undefined
 				? {}
+				: packageJsonSideEffects === "inherit"
+				? inheritedSideEffects ?? {}
 				: { sideEffects: packageJsonSideEffects };
 		await fs.writeJSON(
 			path.join(inDir, "package.json"),

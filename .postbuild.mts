@@ -11,5 +11,4 @@ await esm2cjs({
 	inDir: `${__dirname}/build/esm`,
 	outDir: `${__dirname}/build/cjs`,
 	cleanOutDir: true,
-	packageJsonSideEffects: false,
 });
