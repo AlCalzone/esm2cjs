@@ -150,6 +150,9 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Support inheriting and rewriting the `imports` field in `package.json`
+
 ### 1.3.0 (2024-11-06)
 * Support specifying `sideEffects` in the generated `package.json` as a hint for bundlers
 

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../esm/test3_dep_cjs.js"],
+  "sourcesContent": ["export const env = \"cjs\";\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,MAAM;",
+  "names": []
+}

@@ -36,4 +36,19 @@ describe("Compilation tests", () => {
 			path.join(__dirname, "fixtures/cjs"),
 		);
 	});
+
+	it("Test 3: package #imports", async () => {
+		const content = await fs.readFile(
+			path.join(__dirname, "fixtures/cjs/test3.js"),
+			"utf8",
+		);
+
+		expect(content).toMatchSnapshot();
+
+		const esmEnv = await import("./fixtures/esm/test3.js");
+		const cjsEnv = require("./fixtures/cjs/test3.js");
+		
+		expect(esmEnv.env).toEqual("esm");
+		expect(cjsEnv.env).toEqual("cjs");
+	});
 });

@@ -11,5 +11,6 @@ export interface ESM2CJSOptions {
     target?: BuildOptions["target"];
     writePackageJson?: boolean;
     packageJsonSideEffects?: boolean | "inherit" | string[];
+    packageJsonImports?: "inherit" | Record<string, Record<string, string>>;
 }
-export declare function esm2cjs({ inDir, outDir, globs, sourcemap, logLevel, platform, target, cleanOutDir, writePackageJson, packageJsonSideEffects, }: ESM2CJSOptions): Promise<void>;
+export declare function esm2cjs({ inDir, outDir, globs, sourcemap, logLevel, platform, target, cleanOutDir, writePackageJson, packageJsonSideEffects, packageJsonImports, }: ESM2CJSOptions): Promise<void>;

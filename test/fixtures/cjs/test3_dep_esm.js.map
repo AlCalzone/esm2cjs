@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../esm/test3_dep_esm.js"],
+  "sourcesContent": ["export const env = \"esm\";\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,MAAM;",
+  "names": []
+}
