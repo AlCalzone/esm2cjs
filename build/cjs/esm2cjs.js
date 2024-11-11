@@ -40,7 +40,7 @@ var import_tiny_glob = __toESM(require("tiny-glob"), 1);
 var import_node_url = require("node:url");
 const _dirname = import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__import_meta_url));
 const shimsDir = import_node_path.default.join(_dirname, "../../shims");
-async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit" }) {
+async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit" }) {
   if (cleanOutDir)
     await import_fs_extra.default.emptyDir(outDir);
   if (typeof globs === "string")
@@ -74,28 +74,57 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     }
   }
   if (writePackageJson) {
+    const parentPackageJson = await import_fs_extra.default.readJSON(import_node_path.default.join(process.cwd(), "package.json")).catch(() => void 0);
     let inheritedSideEffects;
-    if (packageJsonSideEffects === "inherit") {
-      const parentPackageJson = await import_fs_extra.default.readJSON(import_node_path.default.join(process.cwd(), "package.json")).catch(() => void 0);
-      if (parentPackageJson?.sideEffects != void 0) {
-        inheritedSideEffects = {
-          sideEffects: parentPackageJson.sideEffects
-        };
-      }
+    if (packageJsonSideEffects === "inherit" && parentPackageJson?.sideEffects != void 0) {
+      inheritedSideEffects = {
+        sideEffects: parentPackageJson.sideEffects
+      };
     }
-    const sideEffects = (
+    const normalizedSideEffects = (
       // Assume the package has side effects, unless explicitly stated otherwise
       packageJsonSideEffects === true || packageJsonSideEffects === void 0 ? {} : packageJsonSideEffects === "inherit" ? inheritedSideEffects ?? {} : { sideEffects: packageJsonSideEffects }
     );
+    let esmImports;
+    if (packageJsonImports === "inherit" && parentPackageJson?.imports != void 0) {
+      esmImports = rewriteImports(parentPackageJson.imports, process.cwd(), inDir);
+    } else if (typeof packageJsonImports === "object") {
+      esmImports = packageJsonImports;
+    }
+    const normalizedESMImports = esmImports ? { imports: esmImports } : {};
+    const cjsImports = esmImports && rewriteImports(esmImports, inDir, outDir);
+    const normalizedCJSImports = cjsImports ? { imports: cjsImports } : {};
     await import_fs_extra.default.writeJSON(import_node_path.default.join(inDir, "package.json"), {
       type: "module",
-      ...sideEffects
+      ...normalizedSideEffects,
+      ...normalizedESMImports
     }, { spaces: 4 });
     await import_fs_extra.default.writeJSON(import_node_path.default.join(outDir, "package.json"), {
       type: "commonjs",
-      ...sideEffects
+      ...normalizedSideEffects,
+      ...normalizedCJSImports
     }, { spaces: 4 });
   }
+}
+function rewriteImports(imports, sourceDir, targetDir) {
+  const ret = {};
+  for (const [importName, specs] of Object.entries(imports)) {
+    const newSpecs = {};
+    for (const [specifier, importPath] of Object.entries(specs)) {
+      if (!importPath.startsWith(".")) {
+        newSpecs[specifier] = importPath;
+        continue;
+      }
+      const absolute = import_node_path.default.resolve(sourceDir, importPath);
+      let relativeToTarget = import_node_path.default.relative(targetDir, absolute);
+      if (!relativeToTarget.startsWith(".")) {
+        relativeToTarget = "./" + relativeToTarget;
+      }
+      newSpecs[specifier] = relativeToTarget;
+    }
+    ret[importName] = newSpecs;
+  }
+  return ret;
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

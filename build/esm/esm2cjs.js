@@ -5,7 +5,7 @@ import glob from "tiny-glob";
 import { fileURLToPath } from "node:url";
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
 export const shimsDir = path.join(_dirname, "../../shims");
-export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", }) {
+export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit", }) {
     // Clean the output dir if necessary
     if (cleanOutDir)
         await fs.emptyDir(outDir);
@@ -47,18 +47,19 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
     }
     // If desired, define the module type of each build directory separately
     if (writePackageJson) {
+        // Some properties must or should be inherited from the parent package.json
+        const parentPackageJson = await fs
+            .readJSON(path.join(process.cwd(), "package.json"))
+            .catch(() => undefined);
+        // "sideEffects"
         let inheritedSideEffects;
-        if (packageJsonSideEffects === "inherit") {
-            const parentPackageJson = await fs
-                .readJSON(path.join(process.cwd(), "package.json"))
-                .catch(() => undefined);
-            if (parentPackageJson?.sideEffects != undefined) {
-                inheritedSideEffects = {
-                    sideEffects: parentPackageJson.sideEffects,
-                };
-            }
+        if (packageJsonSideEffects === "inherit" &&
+            parentPackageJson?.sideEffects != undefined) {
+            inheritedSideEffects = {
+                sideEffects: parentPackageJson.sideEffects,
+            };
         }
-        const sideEffects = 
+        const normalizedSideEffects = 
         // Assume the package has side effects, unless explicitly stated otherwise
         packageJsonSideEffects === true ||
             packageJsonSideEffects === undefined
@@ -66,14 +67,51 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
             : packageJsonSideEffects === "inherit"
                 ? inheritedSideEffects ?? {}
                 : { sideEffects: packageJsonSideEffects };
+        // "imports"
+        let esmImports;
+        if (packageJsonImports === "inherit" &&
+            parentPackageJson?.imports != undefined) {
+            // Inherited imports need to be rewritten to be relative to the input directory
+            esmImports = rewriteImports(parentPackageJson.imports, process.cwd(), inDir);
+        }
+        else if (typeof packageJsonImports === "object") {
+            esmImports = packageJsonImports;
+        }
+        const normalizedESMImports = esmImports ? { imports: esmImports } : {};
+        // Rewrite paths that are relative to the input directory to be relative to the output directory
+        const cjsImports = esmImports && rewriteImports(esmImports, inDir, outDir);
+        const normalizedCJSImports = cjsImports ? { imports: cjsImports } : {};
         await fs.writeJSON(path.join(inDir, "package.json"), {
             type: "module",
-            ...sideEffects,
+            ...normalizedSideEffects,
+            ...normalizedESMImports,
         }, { spaces: 4 });
         await fs.writeJSON(path.join(outDir, "package.json"), {
             type: "commonjs",
-            ...sideEffects,
+            ...normalizedSideEffects,
+            ...normalizedCJSImports,
         }, { spaces: 4 });
     }
+}
+function rewriteImports(imports, sourceDir, targetDir) {
+    const ret = {};
+    for (const [importName, specs] of Object.entries(imports)) {
+        const newSpecs = {};
+        for (const [specifier, importPath] of Object.entries(specs)) {
+            if (!importPath.startsWith(".")) {
+                // Absolute path, no need to rewrite
+                newSpecs[specifier] = importPath;
+                continue;
+            }
+            const absolute = path.resolve(sourceDir, importPath);
+            let relativeToTarget = path.relative(targetDir, absolute);
+            if (!relativeToTarget.startsWith(".")) {
+                relativeToTarget = "./" + relativeToTarget;
+            }
+            newSpecs[specifier] = relativeToTarget;
+        }
+        ret[importName] = newSpecs;
+    }
+    return ret;
 }
 //# sourceMappingURL=esm2cjs.js.map

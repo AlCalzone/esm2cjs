@@ -16,6 +16,12 @@
     },
     "./package.json": "./package.json"
   },
+  "imports": {
+    "#test3_dep": {
+      "import": "./test/fixtures/esm/test3_dep_esm.js",
+      "require": "./test/fixtures/cjs/test3_dep_cjs.js"
+    }
+  },
   "types": "build/esm/index.d.ts",
   "typesVersions": {
     "*": {

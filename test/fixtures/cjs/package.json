@@ -1,3 +1,9 @@
 {
-    "type": "commonjs"
+    "type": "commonjs",
+    "imports": {
+        "#test3_dep": {
+            "import": "../esm/test3_dep_esm.js",
+            "require": "./test3_dep_cjs.js"
+        }
+    }
 }
