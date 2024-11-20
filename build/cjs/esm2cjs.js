@@ -5,6 +5,7 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -40,7 +41,7 @@ var import_tiny_glob = __toESM(require("tiny-glob"), 1);
 var import_node_url = require("node:url");
 const _dirname = import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__import_meta_url));
 const shimsDir = import_node_path.default.join(_dirname, "../../shims");
-async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit" }) {
+async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit", keepNames = true }) {
   if (cleanOutDir)
     await import_fs_extra.default.emptyDir(outDir);
   if (typeof globs === "string")
@@ -53,6 +54,7 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     bundle: false,
     minify: false,
     metafile: true,
+    keepNames,
     sourcemap,
     logLevel,
     platform,
@@ -106,6 +108,7 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     }, { spaces: 4 });
   }
 }
+__name(esm2cjs, "esm2cjs");
 function rewriteImports(imports, sourceDir, targetDir) {
   const ret = {};
   for (const [importName, specs] of Object.entries(imports)) {
@@ -126,6 +129,7 @@ function rewriteImports(imports, sourceDir, targetDir) {
   }
   return ret;
 }
+__name(rewriteImports, "rewriteImports");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   esm2cjs,

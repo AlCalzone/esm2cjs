@@ -19,6 +19,7 @@ export interface ESM2CJSOptions {
 	writePackageJson?: boolean;
 	packageJsonSideEffects?: boolean | "inherit" | string[];
 	packageJsonImports?: "inherit" | Record<string, Record<string, string>>;
+	keepNames?: boolean;
 }
 
 export async function esm2cjs({
@@ -33,6 +34,7 @@ export async function esm2cjs({
 	writePackageJson = true,
 	packageJsonSideEffects = "inherit",
 	packageJsonImports = "inherit",
+	keepNames = true,
 }: ESM2CJSOptions) {
 	// Clean the output dir if necessary
 	if (cleanOutDir) await fs.emptyDir(outDir);
@@ -51,6 +53,7 @@ export async function esm2cjs({
 		bundle: false,
 		minify: false,
 		metafile: true,
+		keepNames,
 		sourcemap,
 		logLevel,
 		platform,

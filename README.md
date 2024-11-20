@@ -150,6 +150,9 @@ This assumes your ESM modules are located in `lib/` and the cjs output goes to `
   Placeholder for the next version:
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Set esbuild's `keepNames` option to `true` by default
+
 ### 1.4.0 (2024-11-11)
 * Support inheriting and rewriting the `imports` field in `package.json`
 
