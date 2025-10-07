@@ -1,5 +1,5 @@
 import { esm2cjs } from "../build/cjs/esm2cjs.js";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
 import path from "path";
 import {describe, beforeAll, it, expect} from "vitest"
 

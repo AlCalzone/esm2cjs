@@ -1,6 +1,6 @@
 import path from "node:path";
 import { BuildOptions, build } from "esbuild";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
 import glob from "tiny-glob";
 import { fileURLToPath } from "node:url";
 
@@ -37,7 +37,10 @@ export async function esm2cjs({
 	keepNames = true,
 }: ESM2CJSOptions) {
 	// Clean the output dir if necessary
-	if (cleanOutDir) await fs.emptyDir(outDir);
+	if (cleanOutDir) {
+		await fs.rm(outDir, { recursive: true, force: true });
+		await fs.mkdir(outDir, { recursive: true });
+	}
 
 	// Figure out what to compile
 	if (typeof globs === "string") globs = [globs];
@@ -90,7 +93,8 @@ export async function esm2cjs({
 	if (writePackageJson) {
 		// Some properties must or should be inherited from the parent package.json
 		const parentPackageJson = await fs
-			.readJSON(path.join(process.cwd(), "package.json"))
+			.readFile(path.join(process.cwd(), "package.json"), "utf-8")
+			.then((data) => JSON.parse(data))
 			.catch(() => undefined);
 
 		// "sideEffects"
@@ -133,23 +137,29 @@ export async function esm2cjs({
 			esmImports && rewriteImports(esmImports, inDir, outDir);
 		const normalizedCJSImports = cjsImports ? { imports: cjsImports } : {};
 
-		await fs.writeJSON(
+		await fs.writeFile(
 			path.join(inDir, "package.json"),
-			{
-				type: "module",
-				...normalizedSideEffects,
-				...normalizedESMImports,
-			},
-			{ spaces: 4 },
+			JSON.stringify(
+				{
+					type: "module",
+					...normalizedSideEffects,
+					...normalizedESMImports,
+				},
+				null,
+				4,
+			) + "\n",
 		);
-		await fs.writeJSON(
+		await fs.writeFile(
 			path.join(outDir, "package.json"),
-			{
-				type: "commonjs",
-				...normalizedSideEffects,
-				...normalizedCJSImports,
-			},
-			{ spaces: 4 },
+			JSON.stringify(
+				{
+					type: "commonjs",
+					...normalizedSideEffects,
+					...normalizedCJSImports,
+				},
+				null,
+				4,
+			) + "\n",
 		);
 	}
 }

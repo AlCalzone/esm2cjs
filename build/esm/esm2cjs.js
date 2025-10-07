@@ -1,14 +1,16 @@
 import path from "node:path";
 import { build } from "esbuild";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
 import glob from "tiny-glob";
 import { fileURLToPath } from "node:url";
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
 export const shimsDir = path.join(_dirname, "../../shims");
 export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit", keepNames = true, }) {
     // Clean the output dir if necessary
-    if (cleanOutDir)
-        await fs.emptyDir(outDir);
+    if (cleanOutDir) {
+        await fs.rm(outDir, { recursive: true, force: true });
+        await fs.mkdir(outDir, { recursive: true });
+    }
     // Figure out what to compile
     if (typeof globs === "string")
         globs = [globs];
@@ -50,7 +52,8 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
     if (writePackageJson) {
         // Some properties must or should be inherited from the parent package.json
         const parentPackageJson = await fs
-            .readJSON(path.join(process.cwd(), "package.json"))
+            .readFile(path.join(process.cwd(), "package.json"), "utf-8")
+            .then((data) => JSON.parse(data))
             .catch(() => undefined);
         // "sideEffects"
         let inheritedSideEffects;
@@ -82,16 +85,16 @@ export async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = 
         // Rewrite paths that are relative to the input directory to be relative to the output directory
         const cjsImports = esmImports && rewriteImports(esmImports, inDir, outDir);
         const normalizedCJSImports = cjsImports ? { imports: cjsImports } : {};
-        await fs.writeJSON(path.join(inDir, "package.json"), {
+        await fs.writeFile(path.join(inDir, "package.json"), JSON.stringify({
             type: "module",
             ...normalizedSideEffects,
             ...normalizedESMImports,
-        }, { spaces: 4 });
-        await fs.writeJSON(path.join(outDir, "package.json"), {
+        }, null, 4) + "\n");
+        await fs.writeFile(path.join(outDir, "package.json"), JSON.stringify({
             type: "commonjs",
             ...normalizedSideEffects,
             ...normalizedCJSImports,
-        }, { spaces: 4 });
+        }, null, 4) + "\n");
     }
 }
 function rewriteImports(imports, sourceDir, targetDir) {

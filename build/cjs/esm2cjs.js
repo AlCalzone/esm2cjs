@@ -36,14 +36,16 @@ module.exports = __toCommonJS(esm2cjs_exports);
 var __import_meta_url = typeof document === "undefined" ? new (require("url".replace("", ""))).URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href;
 var import_node_path = __toESM(require("node:path"), 1);
 var import_esbuild = require("esbuild");
-var import_fs_extra = __toESM(require("fs-extra"), 1);
+var import_promises = __toESM(require("node:fs/promises"), 1);
 var import_tiny_glob = __toESM(require("tiny-glob"), 1);
 var import_node_url = require("node:url");
 const _dirname = import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__import_meta_url));
 const shimsDir = import_node_path.default.join(_dirname, "../../shims");
 async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, logLevel = "warning", platform = "node", target = "node18", cleanOutDir = false, writePackageJson = true, packageJsonSideEffects = "inherit", packageJsonImports = "inherit", keepNames = true }) {
-  if (cleanOutDir)
-    await import_fs_extra.default.emptyDir(outDir);
+  if (cleanOutDir) {
+    await import_promises.default.rm(outDir, { recursive: true, force: true });
+    await import_promises.default.mkdir(outDir, { recursive: true });
+  }
   if (typeof globs === "string")
     globs = [globs];
   const entryPoints = (await Promise.all(globs.map((g) => (0, import_tiny_glob.default)(g, { cwd: inDir })))).reduce((prev, cur) => [...prev, ...cur], []);
@@ -71,12 +73,12 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
         continue;
       }
       const declarationFileName = inputFile.replace(/\.([cm]?)js$/, ".d.$1ts");
-      await import_fs_extra.default.copyFile(import_node_path.default.join(inDir, declarationFileName), import_node_path.default.join(outDir, declarationFileName)).catch(() => {
+      await import_promises.default.copyFile(import_node_path.default.join(inDir, declarationFileName), import_node_path.default.join(outDir, declarationFileName)).catch(() => {
       });
     }
   }
   if (writePackageJson) {
-    const parentPackageJson = await import_fs_extra.default.readJSON(import_node_path.default.join(process.cwd(), "package.json")).catch(() => void 0);
+    const parentPackageJson = await import_promises.default.readFile(import_node_path.default.join(process.cwd(), "package.json"), "utf-8").then((data) => JSON.parse(data)).catch(() => void 0);
     let inheritedSideEffects;
     if (packageJsonSideEffects === "inherit" && parentPackageJson?.sideEffects != void 0) {
       inheritedSideEffects = {
@@ -96,16 +98,16 @@ async function esm2cjs({ inDir, outDir, globs = ["**/*.js"], sourcemap = true, l
     const normalizedESMImports = esmImports ? { imports: esmImports } : {};
     const cjsImports = esmImports && rewriteImports(esmImports, inDir, outDir);
     const normalizedCJSImports = cjsImports ? { imports: cjsImports } : {};
-    await import_fs_extra.default.writeJSON(import_node_path.default.join(inDir, "package.json"), {
+    await import_promises.default.writeFile(import_node_path.default.join(inDir, "package.json"), JSON.stringify({
       type: "module",
       ...normalizedSideEffects,
       ...normalizedESMImports
-    }, { spaces: 4 });
-    await import_fs_extra.default.writeJSON(import_node_path.default.join(outDir, "package.json"), {
+    }, null, 4) + "\n");
+    await import_promises.default.writeFile(import_node_path.default.join(outDir, "package.json"), JSON.stringify({
       type: "commonjs",
       ...normalizedSideEffects,
       ...normalizedCJSImports
-    }, { spaces: 4 });
+    }, null, 4) + "\n");
   }
 }
 __name(esm2cjs, "esm2cjs");
