@@ -50,7 +50,6 @@
   },
   "dependencies": {
     "esbuild": "^0.24.0",
-    "fs-extra": "^10.1.0",
     "tiny-glob": "^0.2.9",
     "yargs": "^17.5.1"
   },
@@ -58,7 +57,6 @@
     "@alcalzone/release-script": "~3.5.9",
     "@alcalzone/release-script-plugin-license": "~3.5.9",
     "@tsconfig/node18": "^18.2.4",
-    "@types/fs-extra": "^9.0.13",
     "@types/node": "^14.18.24",
     "@types/yargs": "^17.0.11",
     "tsx": "^4.19.2",
