@@ -16,11 +16,11 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var esm_exports = {};
-__export(esm_exports, {
+var index_exports = {};
+__export(index_exports, {
   esm2cjs: () => import_esm2cjs.esm2cjs
 });
-module.exports = __toCommonJS(esm_exports);
+module.exports = __toCommonJS(index_exports);
 var import_esm2cjs = require("./esm2cjs.js");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
